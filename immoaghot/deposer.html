@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Déposer une annonce — Arpent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap nav-row">
+    <a href="index.html" class="logo" data-base="index.html">
+      <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 11L12 4l9 7"/><path d="M5 10v9h14v-9"/><path d="M10 19v-6h4v6"/></svg></span>
+      Arpent
+    </a>
+    <nav class="main" id="mainNav">
+      <a href="index.html" data-base="index.html">Accueil</a>
+      <a href="annonces.html" data-base="annonces.html">Annonces</a>
+      <a href="favoris.html" data-base="favoris.html">Favoris</a>
+      <a href="contact.html" data-base="contact.html">Contact</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="fav-pill" href="favoris.html" data-base="favoris.html" aria-label="Mes favoris">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7-4.35-9.5-8.5C.7 8.8 2.6 5 6.3 5c2 0 3.4 1 4.7 2.6C12.3 6 13.7 5 15.7 5c3.7 0 5.6 3.8 3.8 7.5C19 16.65 12 21 12 21z"/></svg>
+        <span data-fav-count>0</span>
+      </a>
+      <button class="btn btn-ghost" onclick="openAuth('login')">Connexion</button>
+      <a class="btn btn-primary" href="deposer.html">Déposer une annonce</a>
+      <button class="burger" onclick="toggleMobileNav()" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="page-header wrap">
+    <p class="eyebrow">Espace propriétaire / agence</p>
+    <h1>Déposer une annonce</h1>
+    <p>Une fois envoyée, votre annonce passe en statut « en attente » et devient visible sur le site après validation par un administrateur.</p>
+  </div>
+
+  <div class="wrap block" style="max-width:760px;">
+
+    <form id="deposerForm" onsubmit="submitDeposer(event)">
+      <div class="form-field"><label>Titre de l'annonce</label><input name="title" required type="text" placeholder="Ex : Appartement lumineux avec vue mer"></div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="form-field"><label>Type de bien</label><select name="type" id="dp-type" required></select></div>
+        <div class="form-field"><label>Transaction</label>
+          <select name="tx" required><option value="Vente">Vente</option><option value="Location">Location</option></select>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="form-field"><label>Ville</label><select name="city" id="dp-city" required></select></div>
+        <div class="form-field"><label>Prix (€)</label><input name="price" required type="number" min="1" placeholder="250000"></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
+        <div class="form-field"><label>Surface (m²)</label><input name="surface" required type="number" min="1" placeholder="75"></div>
+        <div class="form-field"><label>Pièces</label><input name="pieces" type="number" min="0" placeholder="3"></div>
+        <div class="form-field"><label>Chambres</label><input name="chambres" type="number" min="0" placeholder="2"></div>
+        <div class="form-field"><label>Salles de bain</label><input name="sdb" type="number" min="0" placeholder="1"></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="form-field"><label>Étage</label><input name="etage" type="text" placeholder="Ex : 3ᵉ étage, R+1…"></div>
+        <div class="form-field"><label>DPE</label>
+          <select name="dpe"><option value="">Non renseigné</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
+        </div>
+      </div>
+
+      <div class="form-field"><label>Description</label><textarea name="description" required placeholder="Décrivez le bien : caractéristiques, quartier, points forts…"></textarea></div>
+
+      <div class="form-field">
+        <label>Photos</label>
+        <input type="file" accept="image/*" multiple disabled style="padding:10px;background:var(--stone);">
+        <p style="font-size:12px;color:var(--ink-soft);margin-top:6px;">L'envoi de vraies photos nécessite un serveur pour les stocker — désactivé dans ce prototype. Des images de démonstration seront utilisées automatiquement.</p>
+      </div>
+
+      <button class="btn btn-primary" type="submit" style="width:100%;margin-top:8px;">Envoyer l'annonce pour validation</button>
+    </form>
+
+    <div id="deposerConfirm" style="display:none;text-align:center;padding:60px 20px;">
+      <h2 style="margin-bottom:10px;">Annonce envoyée !</h2>
+      <p style="color:var(--ink-soft);max-width:48ch;margin:0 auto;">« <span id="confirmTitle"></span> » a bien été enregistrée avec le statut <span class="badge en_attente" style="margin:0 4px;">En attente</span>. Un administrateur doit la valider avant qu'elle apparaisse dans les annonces publiques.</p>
+      <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;">
+        <a class="btn btn-outline" href="admin.html">Voir dans l'espace admin</a>
+        <a class="btn btn-primary" href="index.html" data-base="index.html">Retour à l'accueil</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="logo" style="color:var(--paper);margin-bottom:12px;">Arpent</div>
+        <p style="color:rgba(239,234,224,.7);font-size:13.5px;line-height:1.6;max-width:32ch;">La plateforme qui relie particuliers et agences pour une transaction immobilière claire, du premier clic à la remise des clés.</p>
+      </div>
+      <div><h5>Plateforme</h5>
+        <a href="annonces.html" data-base="annonces.html">Annonces</a>
+        <a href="deposer.html">Déposer un bien</a>
+        <a href="favoris.html" data-base="favoris.html">Mes favoris</a>
+      </div>
+      <div><h5>Société</h5>
+        <a href="#">À propos</a><a href="#">Nos agences</a><a href="#">Blog</a><a href="admin.html">Espace administration</a>
+      </div>
+      <div><h5>Légal</h5>
+        <a href="#">Mentions légales</a><a href="#">CGV</a><a href="#">Confidentialité</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Arpent — Prototype de démonstration</span>
+      <span>Fait avec soin pour votre cahier des charges</span>
+    </div>
+  </div>
+</footer>
+
+<div class="overlay" id="authOverlay">
+  <div class="modal">
+    <button class="close" onclick="closeAuth()">×</button>
+    <div class="modal-tabs">
+      <button id="tabLogin" class="active" onclick="setAuthTab('login')">Connexion</button>
+      <button id="tabRegister" onclick="setAuthTab('register')">Inscription</button>
+    </div>
+    <h3 id="authTitle">Bon retour</h3>
+    <p class="sub" id="authSub">Connectez-vous pour accéder à vos favoris et alertes.</p>
+    <form onsubmit="submitAuth(event)">
+      <div class="form-field" id="nameField" style="display:none;"><label>Nom</label><input type="text" placeholder="Jean Dupont"></div>
+      <div class="form-field"><label>E-mail</label><input required type="email" placeholder="jean@exemple.fr"></div>
+      <div class="form-field"><label>Mot de passe</label><input required type="password" placeholder="••••••••"></div>
+      <button class="btn btn-primary" style="width:100%;" type="submit" id="authSubmitBtn">Se connecter</button>
+      <button type="button" onclick="requestResetFromModal()" style="background:none;border:none;color:var(--ink-soft);font-size:12.5px;margin-top:12px;text-decoration:underline;cursor:pointer;">Mot de passe oublié ?</button>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/favs.js"></script>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/deposer.js"></script>
+</body>
+</html>
